@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  app-front:
+    build: '../reg-front'
+    ports: 
+      - "4200:80"
+    depends_on:
+      - springbootapp
+
+  springbootapp:
+    image: porichigo15/springbootapp:0.0.1
+    container_name: springbootapp
+    depends_on:
+    - mariadb
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/people-reg
+    ports:
+    - "8080:8080"
+
+  mariadb:
+    image: mariadb:latest
+    container_name: productdb
+    volumes:
+    - /home/docker/volumes/myapp/mysql/:/var/lib/mysql/
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=mydb
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8
